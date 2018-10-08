@@ -1,11 +1,11 @@
 
 #ifndef LESSON2_SET_H
 #define LESSON2_SET_H
-#include <string.h>
-#include <stdio.h>
-#include <conio.h>
-#include <stdlib.h>
-#include <time.h>
+
+#include <cstring>
+#include <cstdio>
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 using namespace std;
 
