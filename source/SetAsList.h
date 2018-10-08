@@ -11,45 +11,79 @@ class SetAsList {
 private:
     static int N;
     int n;
+    char S;
     struct Node {
         Node *next;
         char info;
     };
     Node *head = nullptr;
-
     void createHead();
 
-    friend SetAsList::Node *createNode(char charInfo);
-
-    void add(SetAsList::Node *node);
+    void add(char);
     //friend void addAllToList(SetAsList::nodeHead *head, char *array);
     //friend void freeAll(SetAsList::nodeHead *head);
 public:
     SetAsList();
+
+    explicit SetAsList(char s);
+
+    explicit SetAsList(const SetAsList &);
     void show();
 
+    SetAsList &operator&=(const SetAsList &B);
+
+    SetAsList SetAsList::operator&(const SetAsList &B) const;
 };
 
-SetAsList::SetAsList() {
-
+//default constructor
+SetAsList::SetAsList() : S('0'), n(0), head(new Node) {
+    add('0');
 }
 
+//init random list
+SetAsList::SetAsList(char s) : S(s), n(0), head(new Node) {
+    for (int i = 0; i < N; i++)
+        if (rand() % 2) add(i + 'A');
+}
+
+//init with co
+SetAsList::SetAsList(const SetAsList &copy) {
+    *head = *copy.head;
+    S = copy.S;
+    n = copy.n;
+    for (Node *i = copy.head; i != nullptr; i = i->next) {
+        add(i->info);
+    }
+}
+
+//! конструктор для копирования с переносом?
+SetAsList &SetAsList::operator&=(const SetAsList &B) {
+    int flag;
+    for (Node *b = B.head; b != nullptr; b = b->next) {
+        flag = 1;
+        for (Node *a = head; a != nullptr; a = a->next) {
+            if (a->info == b->info) {
+                flag = 0;
+                break;
+            }
+        }
+        if (flag) {
+            add(b->info);
+        }
+    }
+    return (*this);
+}
+
+SetAsList SetAsList::operator&(const SetAsList &B) const {
+    SetAsList C(*this);
+    return (C &= B);
+}
 void SetAsList::createHead() {
 
     //SetAsList::nodeHead *head = (SetAsList::nodeHead *) malloc(sizeof(SetAsList::nodeHead));
     this->head = new Node();
     head = nullptr;
 }
-
-SetAsList::Node *createNode(char charInfo) {
-
-    //SetAsList::Node *newNode = (SetAsList::Node *) malloc(sizeof(SetAsList::Node));
-    SetAsList::Node *newNode = new SetAsList::Node();
-    newNode->next = nullptr;
-    newNode->info = charInfo;
-    return newNode;
-}
-
 void SetAsList::show() {
 
     cout << "List realization:" << endl;
@@ -80,7 +114,15 @@ void SetAsList::show() {
     }
     printf("-------------------------------\n");
 }*/
-void SetAsList::add(SetAsList::Node *node) {
+void SetAsList::add(char charInfo) {
+    //update counter
+    n++;
+    // create Node
+    SetAsList::Node *node = new SetAsList::Node();
+    //SetAsList::Node *newNode = (SetAsList::Node *) malloc(sizeof(SetAsList::Node));
+    node->next = nullptr;
+    node->info = charInfo;
+    // add to List
     if (head == nullptr)
         head = node;
     else {
