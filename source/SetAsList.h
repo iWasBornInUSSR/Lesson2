@@ -4,64 +4,94 @@
 
 #include <cstdlib>
 #include <iostream>
-
+// head is Node or another class???
 using namespace std;
+struct Node {
+    Node *next;
+    char info;
+};
 
 class SetAsList {
 private:
     static int N;
     int n;
     char S;
-    struct Node {
-        Node *next;
-        char info;
-    };
     Node *head = nullptr;
+
     void createHead();
 
     void add(char);
     //friend void addAllToList(SetAsList::nodeHead *head, char *array);
     //friend void freeAll(SetAsList::nodeHead *head);
 public:
+
     SetAsList();
 
     explicit SetAsList(char s);
 
-    explicit SetAsList(const SetAsList &);
+    SetAsList(const SetAsList &);
+
     void show();
 
-    SetAsList &operator&=(const SetAsList &B);
+    SetAsList &operator|=(const SetAsList &B);
 
-    SetAsList SetAsList::operator&(const SetAsList &B) const;
+    SetAsList operator|(const SetAsList &B) const;
+
+    SetAsList operator&(const SetAsList &);
+
+    SetAsList &operator&=(const SetAsList &);
+
+    SetAsList &operator=(const SetAsList &);
+
+    virtual ~SetAsList();
 };
 
 //default constructor
-SetAsList::SetAsList() : S('0'), n(0), head(new Node) {
-    add('0');
-}
+SetAsList::SetAsList() : S('0'), n(0), head(new Node) { cout << "List " << S << " constructed" << endl; }
 
 //init random list
 SetAsList::SetAsList(char s) : S(s), n(0), head(new Node) {
     for (int i = 0; i < N; i++)
         if (rand() % 2) add(i + 'A');
+    cout << "List " << S << " constructed" << endl;
 }
 
 //init with co
 SetAsList::SetAsList(const SetAsList &copy) {
-    *head = *copy.head;
+    head = new Node();
     S = copy.S;
     n = copy.n;
-    for (Node *i = copy.head; i != nullptr; i = i->next) {
+    for (Node *i = copy.head->next; i != nullptr; i = i->next) {
         add(i->info);
     }
+    cout << "List " << S << " constructed with copy " << copy.S << endl;
 }
 
 //! конструктор для копирования с переносом?
-SetAsList &SetAsList::operator&=(const SetAsList &B) {
-    int flag;
-    for (Node *b = B.head; b != nullptr; b = b->next) {
-        flag = 1;
-        for (Node *a = head; a != nullptr; a = a->next) {
+//operators
+SetAsList &SetAsList::operator=(const SetAsList &copy) {
+    n = copy.n;
+    //cleaning old data in object
+    Node *c;
+    Node *p = head->next;
+    while (p != nullptr) {
+        c = p->next;
+        delete (p);
+        p = c;
+    }
+    head->next = nullptr;
+    // adding new data
+    for (Node *i = copy.head->next; i != nullptr; i = i->next) {
+        add(i->info);
+    }
+    return *this;
+}
+
+SetAsList &SetAsList::operator|=(const SetAsList &B) {
+
+    for (Node *b = B.head->next; b != nullptr; b = b->next) {
+        int flag = 1;
+        for (Node *a = head->next; a != nullptr; a = a->next) {
             if (a->info == b->info) {
                 flag = 0;
                 break;
@@ -74,20 +104,34 @@ SetAsList &SetAsList::operator&=(const SetAsList &B) {
     return (*this);
 }
 
-SetAsList SetAsList::operator&(const SetAsList &B) const {
+SetAsList SetAsList::operator|(const SetAsList &B) const {
     SetAsList C(*this);
-    return (C &= B);
+    return (C |= B);
 }
-void SetAsList::createHead() {
 
-    //SetAsList::nodeHead *head = (SetAsList::nodeHead *) malloc(sizeof(SetAsList::nodeHead));
-    this->head = new Node();
-    head = nullptr;
+SetAsList &SetAsList::operator&=(const SetAsList &B) {
+    int flag;
+    SetAsList C();
+    for (Node *b = B.head->next; b != nullptr; b = b->next) {
+        flag = 0;
+        for (Node *a = head->next; a != nullptr; a = a->next) {
+            if (a->info == b->info) {
+                flag = 1;
+                break;
+            }
+        }
+        if (flag) {
+            add(b->info);
+        }
+    }
+    return (*this);
+
 }
+
 void SetAsList::show() {
 
-    cout << "List realization:" << endl;
-    for (SetAsList::Node *i = head; i != nullptr; i = i->next) {
+    cout << "List id:" << S << " List content:" << endl;
+    for (Node *i = head->next; i != nullptr; i = i->next) {
         cout << i->info << " ";
     }
     cout << endl;
@@ -118,28 +162,43 @@ void SetAsList::add(char charInfo) {
     //update counter
     n++;
     // create Node
-    SetAsList::Node *node = new SetAsList::Node();
+    Node *node = new Node();
     //SetAsList::Node *newNode = (SetAsList::Node *) malloc(sizeof(SetAsList::Node));
     node->next = nullptr;
     node->info = charInfo;
     // add to List
-    if (head == nullptr)
-        head = node;
+    if (head->next == nullptr)
+        head->next = node;  //warning conditional jump or depends on uninitialised value
     else {
-        SetAsList::Node *endNode = head;
+        Node *endNode = head->next;
         while (endNode->next != nullptr)
             endNode = endNode->next;
         endNode->next = node;
     }
 }
-/*void freeAll(SetAsList::nodeHead *head) {
-    SetAsList::Node *c;
-    SetAsList::Node *p = head->first;
+
+//destructor
+SetAsList::~SetAsList() {
+    Node *c;
+    Node *p = head->next;
     while (p != nullptr) {
         c = p->next;
-        free(p);
+        delete (p);
         p = c;
     }
-    free(head);
+    delete (head);
+    cout << "List " << S << " deleted" << endl;
+}
+/*void freeAll(SetAsList::head) {
+
+        Node *c;
+        Node *p = Set.head->next;
+        while (p != nullptr) {
+            c = p->next;
+            free(p);
+            p = c;
+        }
+        free(Set.head);
+
 }*/
 #endif //LESSON2_SETASLIST_H
