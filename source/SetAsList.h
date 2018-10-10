@@ -17,9 +17,6 @@ private:
     int n;
     char S;
     Node *head = nullptr;
-
-    void createHead();
-
     void add(char);
     //friend void addAllToList(SetAsList::nodeHead *head, char *array);
     //friend void freeAll(SetAsList::nodeHead *head);
@@ -69,7 +66,7 @@ SetAsList::SetAsList(const SetAsList &copy) {
 
 //! конструктор для копирования с переносом?
 //operators
-SetAsList &SetAsList::operator=(const SetAsList &copy) {
+SetAsList &SetAsList::operator=(const SetAsList &copy) { //Should copy S?
     n = copy.n;
     //cleaning old data in object
     Node *c;
@@ -110,27 +107,44 @@ SetAsList SetAsList::operator|(const SetAsList &B) const {
 }
 
 SetAsList &SetAsList::operator&=(const SetAsList &B) {
-    int flag;
-    SetAsList C();
+
+    Node *changeableNode, *prev;
+    changeableNode = head->next;
+    prev = changeableNode;
+    SetAsList C(*this);
+    n = 0;
     for (Node *b = B.head->next; b != nullptr; b = b->next) {
-        flag = 0;
-        for (Node *a = head->next; a != nullptr; a = a->next) {
+        int flag = 0;
+        for (Node *a = C.head->next; a != nullptr; a = a->next) {
             if (a->info == b->info) {
                 flag = 1;
                 break;
             }
         }
         if (flag) {
-            add(b->info);
+            prev = changeableNode;
+            changeableNode->info = b->info;
+            changeableNode = changeableNode->next;
+            n++;
         }
     }
-    return (*this);
+    //untie the pointer
+    prev->next = nullptr;
+    //if our list have more nude's than we rewrite, clear excess
+    Node *c;
+    Node *p = changeableNode;
+    while (p != nullptr) {
+        c = p->next;
+        delete (p);
+        p = c;
+    }
 
+    return (*this);
 }
 
 void SetAsList::show() {
 
-    cout << "List id:" << S << " List content:" << endl;
+    cout << "List id:" << S << " List content:" << n << endl;
     for (Node *i = head->next; i != nullptr; i = i->next) {
         cout << i->info << " ";
     }
@@ -183,7 +197,7 @@ SetAsList::~SetAsList() {
     Node *p = head->next;
     while (p != nullptr) {
         c = p->next;
-        delete (p);
+        delete p;
         p = c;
     }
     delete (head);

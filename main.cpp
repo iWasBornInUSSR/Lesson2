@@ -21,9 +21,7 @@ int main() {
     SetAsList A('A'), B('B'), C('C'), D('D');
     A.show();
     B.show();
-    C.show();
-    D.show();
-    A = D;
+    A &= B;
     A.show();
 
     return 0;
