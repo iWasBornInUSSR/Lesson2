@@ -30,6 +30,8 @@ public:
 
     void show();
 
+    int power() { return n; }
+
     SetAsList operator~() const;
 
     SetAsList operator|(const SetAsList &B) const;
@@ -48,7 +50,7 @@ public:
 //default constructor
 SetAsList::SetAsList() : S('0'), n(0), head(new Node) {
     head->next = nullptr;
-    cout << "List " << S << " constructed" << endl;
+    // cout << "List " << S << " constructed" << endl;
 }
 
 //init random list
@@ -56,7 +58,7 @@ SetAsList::SetAsList(char s) : S(s), n(0), head(new Node) {
     head->next = nullptr;
     for (int i = 0; i < N; i++)
         if (rand() % 2) add(i + 'A');
-    cout << "List " << S << " constructed" << endl;
+    //cout << "List " << S << " constructed" << endl;
 }
 
 //init with co
@@ -68,7 +70,7 @@ SetAsList::SetAsList(const SetAsList &copy) {
     for (Node *i = copy.head->next; i != nullptr; i = i->next) {
         add(i->info);
     }
-    cout << "List " << S << " constructed with copy " << copy.S << endl;
+    //cout << "List " << S << " constructed with copy " << copy.S << endl;
 }
 
 //! конструктор для копирования с переносом?
@@ -223,6 +225,6 @@ SetAsList::~SetAsList() {
         p = c;
     }
     delete (head);
-    cout << "List " << S << " deleted" << endl;
+    //  cout << "List " << S << " deleted" << endl;
 }
 #endif //LESSON2_SETASLIST_H

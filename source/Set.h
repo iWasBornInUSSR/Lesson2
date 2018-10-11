@@ -20,7 +20,8 @@ public:
     Set & operator |= (const Set&);
     Set & operator &= (const Set&);
     Set operator ~ ( ) const;
-    void Show( );
+
+    void show();
     int power( ) { return n; }
     explicit Set(char);
     Set( );
@@ -97,8 +98,7 @@ Set Set :: operator ~ ( ) const
 }
 
 
-
-void Set :: Show()
+void Set::show()
 { cout << "\n" << S << " = [" << A << "]"; }
 
 
