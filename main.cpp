@@ -18,11 +18,11 @@ int main() {
 //    cout << " Middle power =" <<
 //    (A.power() + B.power( ) + C.power( ) + D.power( ) + E.power( )) / 5 << " Time=" << end - begin << " / " << q0 << endl;
     srand(time(nullptr));
-    SetAsList A('A'), B('B'), C('C'), D('D');
+    SetAsList A('A'), B('B');
     A.show();
     B.show();
-    A &= B;
+    SetAsList C = ~A;
     A.show();
-
+    C.show();
     return 0;
 }

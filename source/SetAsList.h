@@ -16,7 +16,7 @@ private:
     static int N;
     int n;
     char S;
-    Node *head = nullptr;
+    Node *head;
     void add(char);
     //friend void addAllToList(SetAsList::nodeHead *head, char *array);
     //friend void freeAll(SetAsList::nodeHead *head);
@@ -30,11 +30,13 @@ public:
 
     void show();
 
-    SetAsList &operator|=(const SetAsList &B);
+    SetAsList operator~() const;
 
     SetAsList operator|(const SetAsList &B) const;
 
-    SetAsList operator&(const SetAsList &);
+    SetAsList &operator|=(const SetAsList &B);
+
+    SetAsList operator&(const SetAsList &) const;
 
     SetAsList &operator&=(const SetAsList &);
 
@@ -44,10 +46,14 @@ public:
 };
 
 //default constructor
-SetAsList::SetAsList() : S('0'), n(0), head(new Node) { cout << "List " << S << " constructed" << endl; }
+SetAsList::SetAsList() : S('0'), n(0), head(new Node) {
+    head->next = nullptr;
+    cout << "List " << S << " constructed" << endl;
+}
 
 //init random list
 SetAsList::SetAsList(char s) : S(s), n(0), head(new Node) {
+    head->next = nullptr;
     for (int i = 0; i < N; i++)
         if (rand() % 2) add(i + 'A');
     cout << "List " << S << " constructed" << endl;
@@ -56,6 +62,7 @@ SetAsList::SetAsList(char s) : S(s), n(0), head(new Node) {
 //init with co
 SetAsList::SetAsList(const SetAsList &copy) {
     head = new Node();
+    head->next = nullptr;
     S = copy.S;
     n = copy.n;
     for (Node *i = copy.head->next; i != nullptr; i = i->next) {
@@ -142,6 +149,28 @@ SetAsList &SetAsList::operator&=(const SetAsList &B) {
     return (*this);
 }
 
+SetAsList SetAsList::operator&(const SetAsList &B) const {
+    SetAsList C(*this);
+    return (C &= B);
+}
+
+SetAsList SetAsList::operator~() const {
+    SetAsList C;
+    for (char i = 'A'; i != 'Z'; ++i) {
+        int flag = 1;
+        for (Node *a = head->next; a != nullptr; a = a->next) {
+            if (a->info == i) {
+                flag = 0;
+                break;
+            }
+
+        }
+        if (flag) {
+            C.add(i);
+        }
+    }
+    return C;
+}
 void SetAsList::show() {
 
     cout << "List id:" << S << " List content:" << n << endl;
@@ -150,14 +179,6 @@ void SetAsList::show() {
     }
     cout << endl;
 }
-/*void addAllToList(SetAsList::nodeHead *head, char *array) {
-    for (int i = 0; array[i]; ++i) {
-        SetAsList::Node *node;
-        node = createNode(array[i]);
-        add(head,node);
-    }
-}*/
-
 /*void checkLinList(SetAsList::nodeHead *head)
 {
     struct SetAsList::Node *p = head->first;
@@ -172,6 +193,7 @@ void SetAsList::show() {
     }
     printf("-------------------------------\n");
 }*/
+//add
 void SetAsList::add(char charInfo) {
     //update counter
     n++;
@@ -203,16 +225,4 @@ SetAsList::~SetAsList() {
     delete (head);
     cout << "List " << S << " deleted" << endl;
 }
-/*void freeAll(SetAsList::head) {
-
-        Node *c;
-        Node *p = Set.head->next;
-        while (p != nullptr) {
-            c = p->next;
-            free(p);
-            p = c;
-        }
-        free(Set.head);
-
-}*/
 #endif //LESSON2_SETASLIST_H
