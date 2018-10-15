@@ -26,10 +26,13 @@ public:
     explicit Set(char);
     Set( );
     Set(const Set &);
+
+    Set(const string);
     Set(Set &&);
     Set & operator = (const Set &);
     Set &  operator = (Set &&);
     ~Set( ) { delete [ ] A; }
+
 };
 //constructors
 //default

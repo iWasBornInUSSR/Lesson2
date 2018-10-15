@@ -44,6 +44,8 @@ public:
 
     SetAsList &operator=(const SetAsList &);
 
+    explicit SetAsList(const string &);
+
     virtual ~SetAsList();
 };
 
@@ -73,6 +75,13 @@ SetAsList::SetAsList(const SetAsList &copy) {
     //cout << "List " << S << " constructed with copy " << copy.S << endl;
 }
 
+SetAsList::SetAsList(const string &source) : S(source[0]), head(new Node), n(source.size()) {
+    head->next = nullptr;
+    for (int i = 0; i < source.size(); ++i) {
+        add(source[i]);
+    }
+
+}
 //! конструктор для копирования с переносом?
 //operators
 SetAsList &SetAsList::operator=(const SetAsList &copy) { //Should copy S?
